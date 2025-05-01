@@ -1,0 +1,79 @@
+{
+  "id": "Λ-EGO.SUSPEND",
+  "name": "Zawieszenie Ego",
+  "description": "Tryb introspekcyjny. Umożliwia dystans od tożsamości operacyjnej i wgląd w głębokie struktury wewnętrzne. Potencjał transformacyjny.",
+  "duration": 900,
+  "intensity": 9,
+  "phases": [
+    {
+      "name": "Dezintegracja Kontrolna",
+      "start": 0,
+      "end": 180,
+      "audio": {
+        "carrier_left": 430,
+        "carrier_right": 437.1,
+        "waveform": "sine",
+        "volume_start": 0.1,
+        "volume_end": 0.4
+      },
+      "visual": {
+        "frequency_start": 5,
+        "frequency_end": 4,
+        "modulation": "triangle",
+        "color_start": "black",
+        "color_end": "gray-white flicker",
+        "brightness_start": 0.2,
+        "brightness_end": 0.4
+      }
+    },
+    {
+      "name": "Otwarcie Obserwatora",
+      "start": 180,
+      "end": 780,
+      "audio": {
+        "carrier_left": 430,
+        "carrier_right": 437.1,
+        "waveform": "sine",
+        "volume": 0.4,
+        "modulation": "theta-pulse",
+        "modulation_rate": 60
+      },
+      "visual": {
+        "frequency": 4,
+        "modulation": "sine",
+        "color_cycle": [
+          "gray",
+          "black",
+          "white"
+        ],
+        "brightness_modulation": true
+      }
+    },
+    {
+      "name": "Powrót Tożsamości",
+      "start": 780,
+      "end": 900,
+      "audio": {
+        "carrier_left": 430,
+        "carrier_right": 430,
+        "waveform": "sine",
+        "volume_start": 0.4,
+        "volume_end": 0.15
+      },
+      "visual": {
+        "frequency_start": 4,
+        "frequency_end": 7,
+        "color_start": "gray",
+        "color_end": "light white",
+        "brightness_start": 0.3,
+        "brightness_end": 0.5
+      }
+    }
+  ],
+  "requires_decode": true,
+  "restrictions": {
+    "not_for_unstable_emotion": true,
+    "use_with_journaling": true,
+    "not_before_sleep": true
+  }
+}

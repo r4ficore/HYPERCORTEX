@@ -1,0 +1,79 @@
+{
+  "id": "Λ-DOPAMINE.SURGE",
+  "name": "Dopaminowy Surge",
+  "description": "Nagłe pobudzenie układu dopaminowego. Wysokoczęstotliwościowa synchronizacja motywacyjna. Używaj tylko z timerem.",
+  "duration": 900,
+  "intensity": 10,
+  "phases": [
+    {
+      "name": "Impuls Motywacyjny",
+      "start": 0,
+      "end": 120,
+      "audio": {
+        "carrier_left": 440,
+        "carrier_right_start": 455,
+        "carrier_right_end": 460,
+        "waveform": "sine",
+        "volume_start": 0.2,
+        "volume_end": 0.6
+      },
+      "visual": {
+        "frequency_start": 14,
+        "frequency_end": 20,
+        "modulation": "accelerated",
+        "color_start": "gold",
+        "color_end": "red",
+        "brightness_start": 0.4,
+        "brightness_end": 0.85
+      }
+    },
+    {
+      "name": "Plateau Surge",
+      "start": 120,
+      "end": 720,
+      "audio": {
+        "carrier_left": 440,
+        "carrier_right": 460,
+        "waveform": "sine",
+        "volume": 0.6,
+        "modulation": "amplitude_pulse",
+        "modulation_rate": 30
+      },
+      "visual": {
+        "frequency": 18,
+        "modulation": "pulse",
+        "color_cycle": [
+          "red",
+          "yellow"
+        ],
+        "brightness_modulation": true
+      }
+    },
+    {
+      "name": "Wygaszenie",
+      "start": 720,
+      "end": 900,
+      "audio": {
+        "carrier_left": 440,
+        "carrier_right": 450,
+        "waveform": "sine",
+        "volume_start": 0.6,
+        "volume_end": 0.2
+      },
+      "visual": {
+        "frequency_start": 18,
+        "frequency_end": 14,
+        "color_start": "red",
+        "color_end": "neutral",
+        "brightness_start": 0.8,
+        "brightness_end": 0.4
+      }
+    }
+  ],
+  "requires_decode": false,
+  "restrictions": {
+    "not_more_than_once_daily": true,
+    "not_during_anxiety": true,
+    "requires_timer": true
+  }
+}

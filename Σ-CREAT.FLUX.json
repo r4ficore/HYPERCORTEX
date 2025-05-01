@@ -1,0 +1,78 @@
+{
+  "id": "Σ-CREAT.FLUX",
+  "name": "Kreatywność: Flux",
+  "description": "Twórcza deregulacja. Pobudza asocjacje i przełamuje linearny sposób myślenia. Idealny do brainstormingu, projektowania, wizji.",
+  "duration": 1200,
+  "intensity": 7,
+  "phases": [
+    {
+      "name": "Rozszczepienie Myśli",
+      "start": 0,
+      "end": 180,
+      "audio": {
+        "carrier_left": 440,
+        "carrier_right": 446,
+        "waveform": "sine",
+        "volume_start": 0.2,
+        "volume_end": 0.5
+      },
+      "visual": {
+        "frequency_start": 5,
+        "frequency_end": 6,
+        "modulation": "chaotic-pulse",
+        "color_start": "amber",
+        "color_end": "purple",
+        "brightness_start": 0.3,
+        "brightness_end": 0.6
+      }
+    },
+    {
+      "name": "Przepływ Kreatywny",
+      "start": 180,
+      "end": 1080,
+      "audio": {
+        "carrier_left": 440,
+        "carrier_right": 446,
+        "waveform": "sine",
+        "volume": 0.5,
+        "modulation": "thetachirp",
+        "modulation_rate": 45
+      },
+      "visual": {
+        "frequency": 6,
+        "modulation": "nonlinear",
+        "color_cycle": [
+          "purple",
+          "amber",
+          "orange"
+        ],
+        "brightness_modulation": true
+      }
+    },
+    {
+      "name": "Integracja Wizji",
+      "start": 1080,
+      "end": 1200,
+      "audio": {
+        "carrier_left": 440,
+        "carrier_right": 440,
+        "waveform": "sine",
+        "volume_start": 0.5,
+        "volume_end": 0.15
+      },
+      "visual": {
+        "frequency_start": 6,
+        "frequency_end": 4,
+        "color_start": "purple",
+        "color_end": "neutral",
+        "brightness_start": 0.5,
+        "brightness_end": 0.2
+      }
+    }
+  ],
+  "requires_decode": false,
+  "restrictions": {
+    "best_used_with_notebook": true,
+    "not_for_sleep_transition": true
+  }
+}

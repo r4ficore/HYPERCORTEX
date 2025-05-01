@@ -1,0 +1,77 @@
+{
+  "id": "Σ-RESOLVE.NE",
+  "name": "Noradrenergiczna Czujność",
+  "description": "Sesja zwiększająca czujność i przejrzystość poznawczą bez stresu. 15 minut stanu gotowości i przejrzystości umysłowej.",
+  "duration": 900,
+  "intensity": 7,
+  "phases": [
+    {
+      "name": "Start Stymulacji",
+      "start": 0,
+      "end": 120,
+      "audio": {
+        "carrier_left": 432,
+        "carrier_right": 445,
+        "waveform": "sine",
+        "volume_start": 0.2,
+        "volume_end": 0.5
+      },
+      "visual": {
+        "frequency_start": 10,
+        "frequency_end": 13,
+        "modulation": "ramp",
+        "color_start": "amber",
+        "color_end": "indigo",
+        "brightness_start": 0.4,
+        "brightness_end": 0.6
+      }
+    },
+    {
+      "name": "Czujność",
+      "start": 120,
+      "end": 840,
+      "audio": {
+        "carrier_left": 432,
+        "carrier_right": 445,
+        "waveform": "sine",
+        "volume": 0.5,
+        "modulation": "breath",
+        "modulation_rate": 60
+      },
+      "visual": {
+        "frequency": 13,
+        "modulation": "sine",
+        "color_cycle": [
+          "amber",
+          "indigo"
+        ],
+        "brightness_modulation": true
+      }
+    },
+    {
+      "name": "Powrót",
+      "start": 840,
+      "end": 900,
+      "audio": {
+        "carrier_left": 432,
+        "carrier_right": 432,
+        "waveform": "sine",
+        "volume_start": 0.5,
+        "volume_end": 0.2
+      },
+      "visual": {
+        "frequency_start": 13,
+        "frequency_end": 10,
+        "color_start": "indigo",
+        "color_end": "blue-gray",
+        "brightness_start": 0.5,
+        "brightness_end": 0.3
+      }
+    }
+  ],
+  "requires_decode": false,
+  "restrictions": {
+    "max_sessions_per_day": 2,
+    "not_during_tension": true
+  }
+}

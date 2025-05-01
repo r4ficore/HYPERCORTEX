@@ -1,0 +1,81 @@
+{
+  "id": "Σ-DESYNC.GATE",
+  "name": "Brama Desynchronizacji",
+  "description": "Sesja destabilizacji poznawczej — celowe rozsynchronizowanie półkul mózgowych w celu zerwania wzorca. Nie do stosowania codziennego.",
+  "duration": 720,
+  "intensity": 9,
+  "phases": [
+    {
+      "name": "Rozszczepienie Rytmu",
+      "start": 0,
+      "end": 180,
+      "audio": {
+        "carrier_left": 440,
+        "carrier_right": 453,
+        "waveform": "square",
+        "volume": 0.5,
+        "modulation": "step-shift",
+        "modulation_values": [
+          13,
+          21
+        ],
+        "modulation_interval": 15
+      },
+      "visual": {
+        "frequency_left": 13,
+        "frequency_right": 21,
+        "modulation": "dual-pulse",
+        "color_left": "green",
+        "color_right": "amber",
+        "brightness": 0.5
+      }
+    },
+    {
+      "name": "Chaos Percepcyjny",
+      "start": 180,
+      "end": 540,
+      "audio": {
+        "carrier_left": 440,
+        "carrier_right": 453,
+        "waveform": "sine",
+        "volume": 0.5,
+        "modulation": "oscillating",
+        "modulation_range": [
+          13,
+          21
+        ],
+        "modulation_rate": 60
+      },
+      "visual": {
+        "frequency_pattern": "asymmetric",
+        "color_pattern": "irregular",
+        "brightness_modulation": true
+      }
+    },
+    {
+      "name": "Wyjście w Prostotę",
+      "start": 540,
+      "end": 720,
+      "audio": {
+        "carrier_left": 440,
+        "carrier_right": 440,
+        "waveform": "sine",
+        "volume_start": 0.5,
+        "volume_end": 0.1
+      },
+      "visual": {
+        "frequency": 10,
+        "modulation": "stable",
+        "color": "white",
+        "brightness_start": 0.4,
+        "brightness_end": 0.2
+      }
+    }
+  ],
+  "requires_decode": true,
+  "restrictions": {
+    "max_sessions_per_week": 1,
+    "not_for_sensitive_states": true,
+    "not_during_emotional_instability": true
+  }
+}

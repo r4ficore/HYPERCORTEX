@@ -1,0 +1,80 @@
+{
+  "id": "Σ-PLASTIC.GAMMA+",
+  "name": "Neuroplastyczność: Gamma+",
+  "description": "Sesja aktywacji plastyczności neuronalnej – łączy theta (wchłanianie) z gamma (przekształcanie). Do nauki, afirmacji, terapii.",
+  "duration": 1500,
+  "intensity": 9,
+  "phases": [
+    {
+      "name": "Otwarcie Przejścia",
+      "start": 0,
+      "end": 240,
+      "audio": {
+        "carrier_left": 432,
+        "carrier_right": 438,
+        "waveform": "sine",
+        "volume_start": 0.2,
+        "volume_end": 0.4
+      },
+      "visual": {
+        "frequency": 6,
+        "modulation": "sine",
+        "color_start": "green",
+        "color_end": "amber",
+        "brightness_start": 0.3,
+        "brightness_end": 0.5
+      }
+    },
+    {
+      "name": "Aktywacja Gamma",
+      "start": 240,
+      "end": 1200,
+      "audio": {
+        "carrier_left": 432,
+        "carrier_right": 468,
+        "waveform": "sine",
+        "volume": 0.4,
+        "modulation": "amplitude_wave",
+        "modulation_rate": 45
+      },
+      "visual": {
+        "frequency_range": [
+          40,
+          60
+        ],
+        "modulation": "fast-pulse",
+        "color_cycle": [
+          "amber",
+          "white",
+          "sky blue"
+        ],
+        "brightness_modulation": true
+      }
+    },
+    {
+      "name": "Konsolidacja",
+      "start": 1200,
+      "end": 1500,
+      "audio": {
+        "carrier_left": 432,
+        "carrier_right": 440,
+        "waveform": "sine",
+        "volume_start": 0.4,
+        "volume_end": 0.1
+      },
+      "visual": {
+        "frequency": 20,
+        "modulation": "stable",
+        "color": "white",
+        "brightness_start": 0.6,
+        "brightness_end": 0.2
+      }
+    }
+  ],
+  "requires_decode": false,
+  "restrictions": {
+    "not_in_exhaustion": true,
+    "max_sessions_per_day": 1,
+    "ideal_with_learning_material": true
+  }
+}

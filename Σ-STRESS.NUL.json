@@ -1,0 +1,73 @@
+{
+  "id": "Σ-STRESS.NUL",
+  "name": "Redukcja Stresu: Null",
+  "description": "Tryb wygaszający napięcie. Neutralizacja lęku, wsparcie zasypiania. Subtelne rytmy theta i białego szumu.",
+  "duration": 1200,
+  "intensity": 4,
+  "phases": [
+    {
+      "name": "Uspokojenie Wstępne",
+      "start": 0,
+      "end": 180,
+      "audio": {
+        "carrier_left": 432,
+        "carrier_right": 438,
+        "waveform": "sine",
+        "volume_start": 0.1,
+        "volume_end": 0.3
+      },
+      "visual": {
+        "frequency_start": 2,
+        "frequency_end": 1.5,
+        "modulation": "soft-pulse",
+        "color_start": "light green",
+        "color_end": "teal",
+        "brightness_start": 0.3,
+        "brightness_end": 0.5
+      }
+    },
+    {
+      "name": "Neutralizacja",
+      "start": 180,
+      "end": 1080,
+      "audio": {
+        "type": "white_noise",
+        "volume": 0.3,
+        "modulation": "constant"
+      },
+      "visual": {
+        "frequency": 1.5,
+        "modulation": "slow-pulse",
+        "color_cycle": [
+          "green",
+          "blue"
+        ],
+        "brightness_modulation": true
+      }
+    },
+    {
+      "name": "Wygaszenie",
+      "start": 1080,
+      "end": 1200,
+      "audio": {
+        "type": "white_noise",
+        "volume_start": 0.3,
+        "volume_end": 0.05
+      },
+      "visual": {
+        "frequency_start": 1.5,
+        "frequency_end": 0.5,
+        "color_start": "blue",
+        "color_end": "dark blue",
+        "brightness_start": 0.4,
+        "brightness_end": 0.1
+      }
+    }
+  ],
+  "requires_decode": false,
+  "restrictions": {
+    "not_for_daytime_use": true,
+    "ideal_before_sleep": true,
+    "max_sessions_per_day": 2
+  }
+}

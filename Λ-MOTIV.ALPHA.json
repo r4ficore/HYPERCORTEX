@@ -1,0 +1,77 @@
+{
+  "id": "Λ-MOTIV.ALPHA",
+  "name": "Koncentracja: Alpha",
+  "description": "Tryb stabilizacji poznawczej bez napięcia. Idealny do nauki, czytania i pracy umysłowej. Skupienie zrelaksowane.",
+  "duration": 1500,
+  "intensity": 6,
+  "phases": [
+    {
+      "name": "Fokus Startowy",
+      "start": 0,
+      "end": 120,
+      "audio": {
+        "carrier_left": 440,
+        "carrier_right": 454,
+        "waveform": "sine",
+        "volume_start": 0.2,
+        "volume_end": 0.4
+      },
+      "visual": {
+        "frequency_start": 12,
+        "frequency_end": 14,
+        "modulation": "sine",
+        "color_start": "blue",
+        "color_end": "teal",
+        "brightness_start": 0.3,
+        "brightness_end": 0.5
+      }
+    },
+    {
+      "name": "Stabilizacja Alpha",
+      "start": 120,
+      "end": 1380,
+      "audio": {
+        "carrier_left": 440,
+        "carrier_right": 454,
+        "waveform": "sine",
+        "volume": 0.4,
+        "modulation": "alpha-breath",
+        "modulation_rate": 60
+      },
+      "visual": {
+        "frequency": 14,
+        "modulation": "sine",
+        "color_cycle": [
+          "blue",
+          "green"
+        ],
+        "brightness_modulation": true
+      }
+    },
+    {
+      "name": "Zamknięcie Poznawcze",
+      "start": 1380,
+      "end": 1500,
+      "audio": {
+        "carrier_left": 440,
+        "carrier_right": 448,
+        "waveform": "sine",
+        "volume_start": 0.4,
+        "volume_end": 0.1
+      },
+      "visual": {
+        "frequency_start": 14,
+        "frequency_end": 10,
+        "color_start": "green",
+        "color_end": "neutral",
+        "brightness_start": 0.4,
+        "brightness_end": 0.2
+      }
+    }
+  ],
+  "requires_decode": false,
+  "restrictions": {
+    "recommended_before_work": true,
+    "not_for_hyperactive_states": true
+  }
+}

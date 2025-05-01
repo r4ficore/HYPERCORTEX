@@ -1,0 +1,78 @@
+{
+  "id": "Ω-OVERDRIVE.CORTEX",
+  "name": "Kora: Overdrive",
+  "description": "Skokowy wzrost aktywności płata czołowego. Maksymalne pobudzenie egzekutywne i decyzyjne. Tryb do szybkiego działania.",
+  "duration": 300,
+  "intensity": 10,
+  "phases": [
+    {
+      "name": "Ekspozycja Frontowa",
+      "start": 0,
+      "end": 60,
+      "audio": {
+        "carrier_left": 440,
+        "carrier_right": 470,
+        "waveform": "sine",
+        "volume_start": 0.3,
+        "volume_end": 0.6
+      },
+      "visual": {
+        "frequency_start": 30,
+        "frequency_end": 40,
+        "modulation": "pulse",
+        "color_start": "silver",
+        "color_end": "white",
+        "brightness_start": 0.5,
+        "brightness_end": 0.8
+      }
+    },
+    {
+      "name": "Tryb Egzekutywny",
+      "start": 60,
+      "end": 270,
+      "audio": {
+        "carrier_left": 440,
+        "carrier_right": 480,
+        "waveform": "sine",
+        "volume": 0.6,
+        "modulation": "gamma-pulse",
+        "modulation_rate": 30
+      },
+      "visual": {
+        "frequency": 40,
+        "modulation": "gamma-sync",
+        "color_cycle": [
+          "white",
+          "silver"
+        ],
+        "brightness_modulation": true
+      }
+    },
+    {
+      "name": "Zejście z Przeciążenia",
+      "start": 270,
+      "end": 300,
+      "audio": {
+        "carrier_left": 440,
+        "carrier_right": 460,
+        "waveform": "sine",
+        "volume_start": 0.6,
+        "volume_end": 0.2
+      },
+      "visual": {
+        "frequency_start": 40,
+        "frequency_end": 20,
+        "color_start": "white",
+        "color_end": "gray",
+        "brightness_start": 0.6,
+        "brightness_end": 0.3
+      }
+    }
+  ],
+  "requires_decode": false,
+  "restrictions": {
+    "max_duration_seconds": 300,
+    "not_for_hyperstimulated_states": true,
+    "recommended_interval_minutes": 180
+  }
+}

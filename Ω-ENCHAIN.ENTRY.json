@@ -1,0 +1,66 @@
+{
+  "id": "Ω-ENCHAIN.ENTRY",
+  "name": "Sekwencja Podporządkowująca",
+  "description": "Indukcja stanu poznawczej podatności poprzez synchronizację, rozmycie percepcji i zanik integracji sensorycznej.",
+  "duration": 360,
+  "intensity": 10,
+  "phases": [
+    {
+      "name": "Stabilizacja Rytmu",
+      "start": 0,
+      "end": 120,
+      "audio": {
+        "carrier_left": 432,
+        "carrier_right": 439.5,
+        "waveform": "sine",
+        "volume_start": 0.1,
+        "volume_end": 0.4
+      },
+      "visual": {
+        "frequency": 8,
+        "modulation": "static",
+        "color": "white",
+        "brightness": 0.5
+      }
+    },
+    {
+      "name": "Dezintegracja Percepcyjna",
+      "start": 120,
+      "end": 270,
+      "audio": {
+        "type": "white_noise",
+        "modulation": "cutoff_modulated",
+        "cutoff_freq": 12000,
+        "pulse_rate": 0.05
+      },
+      "visual": {
+        "frequency": 3.8,
+        "modulation": "triangle",
+        "color": "white-green mix",
+        "brightness": 0.6
+      }
+    },
+    {
+      "name": "Okno Sugestii / Cisza",
+      "start": 270,
+      "end": 360,
+      "audio": {
+        "type": "white_noise",
+        "volume_start": 0.2,
+        "volume_end": 0.05
+      },
+      "visual": {
+        "frequency": 0.25,
+        "modulation": "pulse",
+        "color": "gray-green",
+        "brightness": 0.2
+      }
+    }
+  ],
+  "requires_decode": true,
+  "restrictions": {
+    "max_duration_seconds": 360,
+    "requires_exit_phase": true,
+    "not_for_sensitive_states": true
+  }
+}

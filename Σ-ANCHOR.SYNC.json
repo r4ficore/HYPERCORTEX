@@ -1,0 +1,78 @@
+{
+  "id": "Σ-ANCHOR.SYNC",
+  "name": "Synchronizacja Kotwicząca",
+  "description": "Tryb stabilizujący uwagę i rytm poznawczy. Idealny dla osób z ADHD, rozproszeniem, nadmiarową aktywnością bodźcową.",
+  "duration": 1200,
+  "intensity": 6,
+  "phases": [
+    {
+      "name": "Zgranie Rytmu",
+      "start": 0,
+      "end": 180,
+      "audio": {
+        "carrier_left": 432,
+        "carrier_right": 442.5,
+        "waveform": "sine",
+        "volume_start": 0.2,
+        "volume_end": 0.4
+      },
+      "visual": {
+        "frequency_start": 9,
+        "frequency_end": 10.5,
+        "modulation": "stable-pulse",
+        "color_start": "blue-gray",
+        "color_end": "amber",
+        "brightness_start": 0.3,
+        "brightness_end": 0.5
+      }
+    },
+    {
+      "name": "Kotwica",
+      "start": 180,
+      "end": 1020,
+      "audio": {
+        "carrier_left": 432,
+        "carrier_right": 442.5,
+        "waveform": "sine",
+        "volume": 0.4,
+        "modulation": "flat",
+        "modulation_rate": 0
+      },
+      "visual": {
+        "frequency": 10.5,
+        "modulation": "sine",
+        "color_cycle": [
+          "blue-gray",
+          "amber"
+        ],
+        "brightness_modulation": true
+      }
+    },
+    {
+      "name": "Stabilne Wyjście",
+      "start": 1020,
+      "end": 1200,
+      "audio": {
+        "carrier_left": 432,
+        "carrier_right": 432,
+        "waveform": "sine",
+        "volume_start": 0.4,
+        "volume_end": 0.15
+      },
+      "visual": {
+        "frequency_start": 10.5,
+        "frequency_end": 8,
+        "color_start": "amber",
+        "color_end": "neutral",
+        "brightness_start": 0.5,
+        "brightness_end": 0.2
+      }
+    }
+  ],
+  "requires_decode": false,
+  "restrictions": {
+    "recommended_for_adhd": true,
+    "do_not_interrupt": true,
+    "preferred_headphones": "over-ear"
+  }
+}

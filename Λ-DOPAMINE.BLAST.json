@@ -1,0 +1,77 @@
+{
+  "id": "Λ-DOPAMINE.BLAST",
+  "name": "Dopaminowy Blast",
+  "description": "Ekstremalne pobudzenie dopaminowe. 5 minutowy rytuał startowy z maksymalnym impulsem działania.",
+  "duration": 300,
+  "intensity": 10,
+  "phases": [
+    {
+      "name": "Impuls Startowy",
+      "start": 0,
+      "end": 60,
+      "audio": {
+        "carrier_left": 440,
+        "carrier_right": 456.8,
+        "waveform": "sine",
+        "volume_start": 0.3,
+        "volume_end": 0.6
+      },
+      "visual": {
+        "frequency_start": 14,
+        "frequency_end": 18,
+        "modulation": "linear",
+        "color_start": "yellow",
+        "color_end": "bright red",
+        "brightness_start": 0.5,
+        "brightness_end": 0.9
+      }
+    },
+    {
+      "name": "Peak Boost",
+      "start": 60,
+      "end": 240,
+      "audio": {
+        "carrier_left": 440,
+        "carrier_right": 456.8,
+        "waveform": "sine",
+        "volume": 0.6,
+        "modulation": "pulse",
+        "modulation_rate": 30
+      },
+      "visual": {
+        "frequency": 16.8,
+        "modulation": "pulse",
+        "color_cycle": [
+          "red",
+          "white"
+        ],
+        "brightness_modulation": true
+      }
+    },
+    {
+      "name": "Zejście",
+      "start": 240,
+      "end": 300,
+      "audio": {
+        "carrier_left": 440,
+        "carrier_right": 448,
+        "waveform": "sine",
+        "volume_start": 0.6,
+        "volume_end": 0.2
+      },
+      "visual": {
+        "frequency_start": 16,
+        "frequency_end": 10,
+        "color_start": "red",
+        "color_end": "white",
+        "brightness_start": 0.7,
+        "brightness_end": 0.3
+      }
+    }
+  ],
+  "requires_decode": false,
+  "restrictions": {
+    "max_sessions_per_day": 1,
+    "not_after": "20:00"
+  }
+}

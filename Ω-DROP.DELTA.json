@@ -1,0 +1,78 @@
+{
+  "id": "Ω-DROP.DELTA",
+  "name": "Zanurzenie: Delta Drop",
+  "description": "Tryb głębokiego wyłączenia. Umożliwia przejście w stan senno-mistyczny. Pomaga w odłączeniu się od bodźców zewnętrznych i 'resetowaniu' świadomości.",
+  "duration": 1500,
+  "intensity": 3,
+  "phases": [
+    {
+      "name": "Zanikanie Hałasu",
+      "start": 0,
+      "end": 180,
+      "audio": {
+        "carrier_left": 440,
+        "carrier_right": 442,
+        "waveform": "sine",
+        "volume_start": 0.1,
+        "volume_end": 0.25
+      },
+      "visual": {
+        "frequency_start": 3,
+        "frequency_end": 2,
+        "modulation": "slow-sine",
+        "color_start": "deep blue",
+        "color_end": "violet",
+        "brightness_start": 0.2,
+        "brightness_end": 0.4
+      }
+    },
+    {
+      "name": "Stan Delta",
+      "start": 180,
+      "end": 1380,
+      "audio": {
+        "carrier_left": 440,
+        "carrier_right": 442,
+        "waveform": "sine",
+        "volume": 0.25,
+        "modulation": "delta-breath",
+        "modulation_rate": 30
+      },
+      "visual": {
+        "frequency": 2,
+        "modulation": "sine",
+        "color_cycle": [
+          "violet",
+          "blue-black"
+        ],
+        "brightness_modulation": true
+      }
+    },
+    {
+      "name": "Wygaszenie Świadomości",
+      "start": 1380,
+      "end": 1500,
+      "audio": {
+        "carrier_left": 440,
+        "carrier_right": 440,
+        "waveform": "sine",
+        "volume_start": 0.25,
+        "volume_end": 0.05
+      },
+      "visual": {
+        "frequency_start": 2,
+        "frequency_end": 0.5,
+        "color_start": "violet",
+        "color_end": "black",
+        "brightness_start": 0.3,
+        "brightness_end": 0.05
+      }
+    }
+  ],
+  "requires_decode": false,
+  "restrictions": {
+    "must_lie_down": true,
+    "not_for_daylight": true,
+    "only_with_noise_cancellation": true
+  }
+}

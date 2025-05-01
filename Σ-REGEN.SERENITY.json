@@ -1,0 +1,77 @@
+{
+  "id": "Σ-REGEN.SERENITY",
+  "name": "Regeneracja: Serenity",
+  "description": "Sesja synchronizacji i wewnętrznej regulacji. 30 minut balansowania rytmu emocjonalnego i neurofizjologicznego.",
+  "duration": 1800,
+  "intensity": 4,
+  "phases": [
+    {
+      "name": "Zanurzenie",
+      "start": 0,
+      "end": 180,
+      "audio": {
+        "carrier_left": 440,
+        "carrier_right": 448,
+        "waveform": "sine",
+        "volume_start": 0.1,
+        "volume_end": 0.4
+      },
+      "visual": {
+        "frequency_start": 6,
+        "frequency_end": 8,
+        "modulation": "linear",
+        "color_start": "dark green",
+        "color_end": "jade",
+        "brightness_start": 0.2,
+        "brightness_end": 0.5
+      }
+    },
+    {
+      "name": "Regulacja",
+      "start": 180,
+      "end": 1500,
+      "audio": {
+        "carrier_left": 440,
+        "carrier_right": 448,
+        "waveform": "sine",
+        "volume": 0.5,
+        "modulation": "amplitude_breathing",
+        "modulation_rate": 60
+      },
+      "visual": {
+        "frequency": 8.5,
+        "modulation": "sine",
+        "color_cycle": [
+          "steel blue",
+          "jade"
+        ],
+        "brightness_modulation": true
+      }
+    },
+    {
+      "name": "Powrót",
+      "start": 1500,
+      "end": 1800,
+      "audio": {
+        "carrier_left": 440,
+        "carrier_right": 440,
+        "waveform": "sine",
+        "volume_start": 0.5,
+        "volume_end": 0.1
+      },
+      "visual": {
+        "frequency_start": 8,
+        "frequency_end": 6,
+        "color_start": "jade",
+        "color_end": "light blue",
+        "brightness_start": 0.5,
+        "brightness_end": 0.2
+      }
+    }
+  ],
+  "requires_decode": false,
+  "restrictions": {
+    "not_during_noise": true,
+    "max_sessions_per_day": 2
+  }
+}

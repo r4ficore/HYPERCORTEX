@@ -1,0 +1,77 @@
+{
+  "id": "Λ-MOTIV.BOOST",
+  "name": "Motywacja: Boost",
+  "description": "Dopaminowa aktywacja i synchronizacja rytmu działania. 15 minutowy rytuał motywacyjny.",
+  "duration": 900,
+  "intensity": 8,
+  "phases": [
+    {
+      "name": "Wejście / Aktywacja",
+      "start": 0,
+      "end": 90,
+      "audio": {
+        "carrier_left": 440,
+        "carrier_right": 454,
+        "waveform": "sine",
+        "volume_start": 0.2,
+        "volume_end": 0.6
+      },
+      "visual": {
+        "frequency_start": 10,
+        "frequency_end": 14,
+        "modulation": "linear",
+        "color_start": "white",
+        "color_end": "red",
+        "brightness_start": 0.3,
+        "brightness_end": 0.8
+      }
+    },
+    {
+      "name": "Plateau / Stabilizacja",
+      "start": 90,
+      "end": 750,
+      "audio": {
+        "carrier_left": 440,
+        "carrier_right": 454,
+        "waveform": "sine",
+        "volume": 0.6,
+        "modulation": "amplitude_pulse",
+        "modulation_rate": 60
+      },
+      "visual": {
+        "frequency": 14,
+        "modulation": "sine",
+        "color_cycle": [
+          "white",
+          "red"
+        ],
+        "brightness_modulation": true
+      }
+    },
+    {
+      "name": "Zejście / Przejście",
+      "start": 750,
+      "end": 900,
+      "audio": {
+        "carrier_left": 440,
+        "carrier_right": 454,
+        "waveform": "sine",
+        "volume_start": 0.6,
+        "volume_end": 0.2
+      },
+      "visual": {
+        "frequency_start": 14,
+        "frequency_end": 10,
+        "color_start": "red",
+        "color_end": "white",
+        "brightness_start": 0.6,
+        "brightness_end": 0.2
+      }
+    }
+  ],
+  "requires_decode": false,
+  "restrictions": {
+    "not_after": "22:00",
+    "max_sessions_per_day": 2
+  }
+}

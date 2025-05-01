@@ -1,0 +1,46 @@
+{
+  "categories": [
+    {
+      "name": "Skoncentruj się",
+      "icon": "🔋",
+      "sessions": [
+        "Λ-MOTIV.ALPHA.json",
+        "Λ-MOTIV.BOOST.json",
+        "Λ-DOPAMINE.SURGE.json",
+        "Σ-RESOLVE.NE.json",
+        "Λ-DOPAMINE.BLAST.json",
+        "Λ-ACTIV.GAMMA.json"
+      ]
+    },
+    {
+      "name": "Zregeneruj się",
+      "icon": "💆‍♂️",
+      "sessions": [
+        "Σ-REGEN.SERENITY.json",
+        "Σ-STRESS.NUL.json",
+        "Ω-DROP.DELTA.json",
+        "Σ-ANCHOR.SYNC.json"
+      ]
+    },
+    {
+      "name": "Zainspiruj się",
+      "icon": "🎨",
+      "sessions": [
+        "Σ-CREAT.FLUX.json",
+        "Σ-PLASTIC.GAMMA+.json",
+        "Λ-EGO.SUSPEND.json"
+      ]
+    },
+    {
+      "name": "Wejdź głęboko",
+      "icon": "🌀",
+      "sessions": [
+        "Ω-ABSORB.THETA.json",
+        "Ω-VOID.TRUTH.json",
+        "Ω-ENCHAIN.ENTRY.json",
+        "Σ-DESYNC.GATE.json",
+        "Ω-OVERDRIVE.CORTEX.json"
+      ]
+    }
+  ]
+}

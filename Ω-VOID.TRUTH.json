@@ -1,0 +1,85 @@
+{
+  "id": "Ω-VOID.TRUTH",
+  "name": "Prawda: Pustka",
+  "description": "Sesja dekonstrukcji poznawczej. Wywołuje reset systemu znaczeń przez destabilizację semantyczną i sensoryczną.",
+  "duration": 600,
+  "intensity": 10,
+  "phases": [
+    {
+      "name": "Rozluźnienie Reprezentacji",
+      "start": 0,
+      "end": 120,
+      "audio": {
+        "carrier_left": 440,
+        "carrier_right_pattern": [
+          455,
+          470
+        ],
+        "waveform": "square",
+        "volume": 0.5
+      },
+      "visual": {
+        "frequency_start": 30,
+        "frequency_end": 40,
+        "modulation": "irregular",
+        "color_transition": [
+          "white",
+          "green-red flux"
+        ],
+        "brightness_range": [
+          0.3,
+          0.7
+        ]
+      }
+    },
+    {
+      "name": "Rozpuszczenie Przekonań",
+      "start": 120,
+      "end": 480,
+      "audio": {
+        "carrier_left": 440,
+        "carrier_right_variable": true,
+        "waveform": "sine",
+        "volume": 0.5,
+        "modulation": "semantic-drift"
+      },
+      "visual": {
+        "frequency_range": [
+          38,
+          45
+        ],
+        "color_cycle": [
+          "red",
+          "green"
+        ],
+        "brightness_modulation": true
+      }
+    },
+    {
+      "name": "Opróżnienie",
+      "start": 480,
+      "end": 600,
+      "audio": {
+        "type": "white_noise",
+        "volume_start": 0.3,
+        "volume_end": 0.05
+      },
+      "visual": {
+        "frequency": 1,
+        "modulation": "binary-pulse",
+        "color_cycle": [
+          "white",
+          "black"
+        ],
+        "brightness_start": 0.2,
+        "brightness_end": 0.1
+      }
+    }
+  ],
+  "requires_decode": true,
+  "restrictions": {
+    "requires_pre_stabilization": true,
+    "not_for_general_use": true,
+    "only_when_emotionally_stable": true
+  }
+}

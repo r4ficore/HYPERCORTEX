@@ -1,0 +1,78 @@
+{
+  "id": "Ω-ABSORB.THETA",
+  "name": "Absorpcja: Theta",
+  "description": "Stan otwartości hipnoidalnej. Fale theta rozluźniają filtr poznawczy, umożliwiając wejście w obszar obrazowy i semantyczny.",
+  "duration": 1200,
+  "intensity": 7,
+  "phases": [
+    {
+      "name": "Zawieszenie Uwagi",
+      "start": 0,
+      "end": 240,
+      "audio": {
+        "carrier_left": 432,
+        "carrier_right": 438,
+        "waveform": "sine",
+        "volume_start": 0.1,
+        "volume_end": 0.35
+      },
+      "visual": {
+        "frequency_start": 7,
+        "frequency_end": 5.5,
+        "modulation": "sine",
+        "color_start": "deep blue",
+        "color_end": "violet",
+        "brightness_start": 0.2,
+        "brightness_end": 0.5
+      }
+    },
+    {
+      "name": "Wchłanianie / Sugestia",
+      "start": 240,
+      "end": 960,
+      "audio": {
+        "carrier_left": 432,
+        "carrier_right": 438,
+        "waveform": "sine",
+        "volume": 0.35,
+        "modulation": "wave-memory",
+        "modulation_rate": 45
+      },
+      "visual": {
+        "frequency": 5.5,
+        "modulation": "slow-wave",
+        "color_cycle": [
+          "violet",
+          "ultramarine"
+        ],
+        "brightness_modulation": true
+      }
+    },
+    {
+      "name": "Przekroczenie / Przekłucie",
+      "start": 960,
+      "end": 1200,
+      "audio": {
+        "carrier_left": 432,
+        "carrier_right": 439.5,
+        "waveform": "sine",
+        "volume_start": 0.35,
+        "volume_end": 0.1
+      },
+      "visual": {
+        "frequency_start": 5.5,
+        "frequency_end": 7,
+        "color_start": "violet",
+        "color_end": "dark neutral",
+        "brightness_start": 0.3,
+        "brightness_end": 0.2
+      }
+    }
+  ],
+  "requires_decode": false,
+  "restrictions": {
+    "not_before_sleep": true,
+    "recommended_after_reflection": true,
+    "use_with_notebook": true
+  }
+}
