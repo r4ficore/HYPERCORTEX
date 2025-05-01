@@ -6,24 +6,11 @@
   <title>HYPERCORTEX</title>
   <style>
     body {
-      margin: 0;
-      font-family: sans-serif;
       background: #000;
       color: #fff;
-      overflow: hidden;
-    }
-    #visual-bg {
-      position: fixed;
-      top: 0; left: 0;
-      width: 100%;
-      height: 100%;
-      z-index: -1;
-      transition: background 0.2s linear;
-    }
-    .content {
-      position: relative;
+      font-family: sans-serif;
+      margin: 0;
       padding: 20px;
-      z-index: 1;
     }
     h1, h2 {
       text-align: center;
@@ -46,77 +33,14 @@
     .session-button:hover {
       background: #333;
     }
-    #session-ui {
-      margin-top: 40px;
-      display: none;
-      text-align: center;
-    }
   </style>
 </head>
 <body>
 
-<div id="visual-bg"></div>
-
-<div class="content">
-  <h1>HYPERCORTEX</h1>
-  <div id="categories"></div>
-
-  <div id="session-ui">
-    <h2 id="session-name"></h2>
-    <p id="session-desc"></p>
-    <button onclick="toggleSound()" id="toggle-sound">🔊 Dźwięk włączony</button>
-    <button onclick="endSession()">⏹️ ZAKOŃCZ SESJĘ</button>
-  </div>
-</div>
+<h1>HYPERCORTEX</h1>
+<div id="categories"></div>
 
 <script>
-let audioCtx;
-let oscL, oscR, gainL, gainR, merger;
-let soundActive = true;
-let visualData = {};
-let visualPhase = 0;
-
-function setupAudio(carrierLeft, carrierRight, volume = 0.4, waveform = "sine") {
-  audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-  oscL = audioCtx.createOscillator();
-  oscR = audioCtx.createOscillator();
-  gainL = audioCtx.createGain();
-  gainR = audioCtx.createGain();
-  merger = audioCtx.createChannelMerger(2);
-
-  oscL.frequency.value = carrierLeft;
-  oscR.frequency.value = carrierRight;
-  oscL.type = waveform;
-  oscR.type = waveform;
-  gainL.gain.value = volume;
-  gainR.gain.value = volume;
-
-  oscL.connect(gainL).connect(merger, 0, 0);
-  oscR.connect(gainR).connect(merger, 0, 1);
-  merger.connect(audioCtx.destination);
-
-  oscL.start();
-  oscR.start();
-}
-
-function setupVisual(frequency, color, brightness, modulation = "sine") {
-  visualData = { frequency, color, brightness, modulation };
-  visualPhase = 0;
-  requestAnimationFrame(animateVisual);
-}
-
-function animateVisual(timestamp) {
-  if (!visualData.frequency) return;
-  const t = timestamp / 1000;
-  const base = 0.5 + 0.5 * Math.sin(2 * Math.PI * visualData.frequency * t);
-  const brightness = visualData.modulation === "sine" ? base : 1;
-  const color = visualData.color || "#000";
-
-  document.getElementById("visual-bg").style.background = color;
-  document.getElementById("visual-bg").style.opacity = (brightness * visualData.brightness).toFixed(2);
-  requestAnimationFrame(animateVisual);
-}
-
 fetch('index.json')
   .then(res => res.json())
   .then(data => {
@@ -132,50 +56,13 @@ fetch('index.json')
         const btn = document.createElement("div");
         btn.className = "session-button";
         btn.textContent = filename.replace(".json", "");
-        btn.onclick = () => loadSession(filename);
+        btn.onclick = () => window.open('session.html?session=' + filename, '_blank');
         div.appendChild(btn);
       });
 
       container.appendChild(div);
     });
   });
-
-function loadSession(filename) {
-  fetch(filename)
-    .then(response => response.json())
-    .then(data => {
-      document.getElementById("session-ui").style.display = "block";
-      document.getElementById("session-name").textContent = data.name;
-      document.getElementById("session-desc").textContent = data.description;
-
-      const a = data.phases[0].audio;
-      setupAudio(a.carrier_left, a.carrier_right || a.carrier_right_start || a.carrier_left, a.volume_start || a.volume || 0.4, a.waveform || "sine");
-
-      const v = data.phases[0].visual;
-      setupVisual(v.frequency || 10, v.color || "#222", v.brightness_start || v.brightness || 0.4, v.modulation || "sine");
-    });
-}
-
-function toggleSound() {
-  const btn = document.getElementById("toggle-sound");
-  if (!audioCtx) return;
-  if (soundActive) {
-    audioCtx.suspend();
-    btn.textContent = "🔇 Dźwięk wyłączony";
-  } else {
-    audioCtx.resume();
-    btn.textContent = "🔊 Dźwięk włączony";
-  }
-  soundActive = !soundActive;
-}
-
-function endSession() {
-  if (oscL) oscL.stop();
-  if (oscR) oscR.stop();
-  if (audioCtx) audioCtx.close();
-  alert("Sesja zakończona.");
-  location.reload();
-}
 </script>
 
 </body>
