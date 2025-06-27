@@ -2,118 +2,129 @@
 <html lang="pl">
 <head>
   <meta charset="UTF-8">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline';">
+  <meta http-equiv="Content-Security-Policy"
+        content="default-src 'self'; script-src 'self' 'unsafe-inline';">
   <title>Sesja – HYPERCORTEX</title>
   <style>
-    html, body {
-      margin: 0;
-      padding: 0;
-      background: black;
-      overflow: hidden;
-      height: 100%;
-    }
-    #visual-bg {
-      position: fixed;
-      top: 0; left: 0;
-      width: 100%;
-      height: 100%;
-      background: black;
-      z-index: -1;
-      pointer-events: none;
-      transition: background 0.2s, opacity 0.2s;
-    }
-    #controls {
-      position: fixed;
-      top: 20px;
-      right: 20px;
-      z-index: 2;
-    }
-    button {
-      background: #111;
-      color: #fff;
-      border: 1px solid #555;
-      padding: 10px 20px;
-      cursor: pointer;
-      font-size: 1em;
-    }
-    button:hover {
-      background: #222;
-    }
+    html,body{margin:0;padding:0;background:#000;height:100%;overflow:hidden;}
+    #visual-bg{position:fixed;inset:0;background:#000;pointer-events:none;transition:opacity .2s;}
+    #gate,#controls{position:fixed;z-index:9;display:flex;gap:20px}
+    #gate{inset:0;align-items:center;justify-content:center;background:#000;cursor:pointer;color:#0f0;font:700 24px/1 monospace}
+    #controls{top:20px;right:20px}
+    button{background:#111;color:#fff;border:1px solid #555;padding:10px 20px;font-size:1em;cursor:pointer;}
+    button:hover{background:#222}
   </style>
 </head>
 <body>
 <div id="visual-bg"></div>
-<div id="controls">
+<div id="gate">▶ START SESSION</div>
+<div id="controls" style="display:none">
   <button onclick="endSession()">⏹️ ZAKOŃCZ</button>
 </div>
 
 <script>
-const urlParams = new URLSearchParams(window.location.search);
-const sessionFile = urlParams.get('session');
-let audioCtx;
-let oscL, oscR, gainL, gainR, merger;
-let visualData = {};
-let startTime;
+/* ---------- CONFIG ---------- */
+const params     = new URLSearchParams(location.search);
+const sessionURL = params.get('session');             // ?session=foo.json
 
-function setupAudio(a) {
-  audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-  oscL = audioCtx.createOscillator();
-  oscR = audioCtx.createOscillator();
+/* ---------- STATE ---------- */
+let phases=[], iPhase=0, audioCtx, oscL,oscR,gainL,gainR;
+let vis={}, visStart=0, animId;
+
+/* ---------- ENTRY ---------- */
+document.getElementById('gate').addEventListener('click', async()=>{
+  phases = (await (await fetch(sessionURL)).json()).phases;
+  document.getElementById('gate').remove();
+  document.getElementById('controls').style.display='flex';
+  bootAudio();
+  playPhase(0);
+});
+
+/* ---------- AUDIO ---------- */
+function bootAudio(){
+  audioCtx = new (AudioContext||webkitAudioContext)();
+  oscL  = audioCtx.createOscillator();
+  oscR  = audioCtx.createOscillator();
   gainL = audioCtx.createGain();
   gainR = audioCtx.createGain();
-  merger = audioCtx.createChannelMerger(2);
-
-  oscL.frequency.value = a.carrier_left;
-  oscR.frequency.value = a.carrier_right || a.carrier_right_start || a.carrier_left;
-  oscL.type = a.waveform || "sine";
-  oscR.type = a.waveform || "sine";
-  gainL.gain.value = a.volume_start || a.volume || 0.4;
-  gainR.gain.value = a.volume_start || a.volume || 0.4;
-
-  oscL.connect(gainL).connect(merger, 0, 0);
-  oscR.connect(gainR).connect(merger, 0, 1);
+  const merger = audioCtx.createChannelMerger(2);
+  oscL.connect(gainL).connect(merger,0,0);
+  oscR.connect(gainR).connect(merger,0,1);
   merger.connect(audioCtx.destination);
-
-  oscL.start();
-  oscR.start();
+  oscL.start(); oscR.start();
 }
 
-function setupVisual(v) {
-  visualData = {
-    frequency: v.frequency || 10,
-    brightness: v.brightness_start || v.brightness || 0.4,
-    color: v.color || "#222",
-    modulation: v.modulation || "sine"
+function applyAudio(a,dur){
+  const now=audioCtx.currentTime;
+  // carrier freq
+  if(a.carrier_left_start||a.carrier_left_end){
+    oscL.frequency.setValueAtTime(a.carrier_left_start??a.carrier_left,now);
+    oscL.frequency.linearRampToValueAtTime(a.carrier_left_end??oscL.frequency.value,now+dur);
+  } else oscL.frequency.setValueAtTime(a.carrier_left,now);
+  if(a.carrier_right_start||a.carrier_right_end){
+    oscR.frequency.setValueAtTime(a.carrier_right_start??a.carrier_right??a.carrier_left,now);
+    oscR.frequency.linearRampToValueAtTime(a.carrier_right_end??oscR.frequency.value,now+dur);
+  } else oscR.frequency.setValueAtTime(a.carrier_right??a.carrier_left,now);
+  // volume
+  const v0=a.volume_start??a.volume??.4, v1=a.volume_end??a.volume??v0;
+  gainL.gain.setValueAtTime(v0,now);
+  gainR.gain.setValueAtTime(v0,now);
+  gainL.gain.linearRampToValueAtTime(v1,now+dur);
+  gainR.gain.linearRampToValueAtTime(v1,now+dur);
+  // waveform
+  oscL.type = oscR.type = a.waveform??'sine';
+}
+
+/* ---------- VISUAL ---------- */
+function applyVisual(v,dur){
+  vis={
+    f0:v.frequency_start??v.frequency??10,
+    f1:v.frequency_end  ??v.frequency??10,
+    b0:v.brightness_start??v.brightness??.4,
+    b1:v.brightness_end  ??v.brightness??.4,
+    c0:v.color_start??v.color??'#000',
+    c1:v.color_end  ??v.color??'#000',
+    mod:v.modulation??'sine',
+    dur
   };
-  startTime = performance.now();
-  requestAnimationFrame(animateVisual);
+  visStart = performance.now();
+  cancelAnimationFrame(animId);
+  animId = requestAnimationFrame(loopVis);
 }
 
-function animateVisual(timestamp) {
-  const t = (timestamp - startTime) / 1000;
-  const base = 0.5 + 0.5 * Math.sin(2 * Math.PI * visualData.frequency * t);
-  const brightness = visualData.modulation === "sine" ? base : 1;
-  const color = visualData.color;
-
-  const visual = document.getElementById("visual-bg");
-  visual.style.background = color;
-  visual.style.opacity = (brightness * visualData.brightness).toFixed(2);
-  requestAnimationFrame(animateVisual);
+function lerp(a,b,t){return a+(b-a)*t}
+function loopVis(ts){
+  const t = (ts-visStart)/1000, p = Math.min(t/vis.dur,1);
+  const freq = lerp(vis.f0,vis.f1,p);
+  const brBase = vis.mod==='pulse' ? (Math.sin(2*Math.PI*freq*t)>0?1:0)
+                                   : .5+.5*Math.sin(2*Math.PI*freq*t);
+  const br = brBase*lerp(vis.b0,vis.b1,p);
+  const bg = document.getElementById('visual-bg');
+  // simple HSL fade for color
+  bg.style.background = p<1?vis.c0:vis.c1;
+  bg.style.opacity    = br.toFixed(2);
+  animId = requestAnimationFrame(loopVis);
 }
 
-function endSession() {
-  if (oscL) oscL.stop();
-  if (oscR) oscR.stop();
-  if (audioCtx) audioCtx.close();
+/* ---------- PHASE ENGINE ---------- */
+function playPhase(n){
+  iPhase = n;
+  const p = phases[n];
+  const dur = (p.end - p.start);
+  applyAudio (p.audio,  dur);
+  applyVisual(p.visual,dur);
+  if(n<phases.length-1)
+    setTimeout(()=>playPhase(n+1), dur*1000);
+  else
+    setTimeout(endSession, dur*1000);
+}
+
+/* ---------- FIN ---------- */
+function endSession(){
+  try{oscL.stop();oscR.stop();audioCtx.close();}catch{}
+  cancelAnimationFrame(animId);
   window.close();
 }
-
-fetch(sessionFile)
-  .then(res => res.json())
-  .then(data => {
-    setupAudio(data.phases[0].audio);
-    setupVisual(data.phases[0].visual);
-  });
 </script>
 </body>
 </html>
