@@ -3,16 +3,16 @@
 <head>
   <meta charset="UTF-8">
   <meta http-equiv="Content-Security-Policy"
-        content="default-src 'self'; script-src 'self' 'unsafe-inline';">
+        content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline';">
   <title>Sesja – HYPERCORTEX</title>
   <style>
-    html,body{margin:0;padding:0;background:#000;height:100%;overflow:hidden;}
+    html,body{margin:0;padding:0;height:100%;overflow:hidden;background:#000;color:#fff;}
     #visual-bg{position:fixed;inset:0;background:#000;pointer-events:none;transition:opacity .2s;}
-    #gate,#controls{position:fixed;z-index:9;display:flex;gap:20px}
-    #gate{inset:0;align-items:center;justify-content:center;background:#000;cursor:pointer;color:#0f0;font:700 24px/1 monospace}
-    #controls{top:20px;right:20px}
-    button{background:#111;color:#fff;border:1px solid #555;padding:10px 20px;font-size:1em;cursor:pointer;}
-    button:hover{background:#222}
+    #gate,#controls{position:fixed;z-index:9;display:flex;align-items:center;justify-content:center;width:100%;}
+    #gate{inset:0;cursor:pointer;background:#000;font:700 24px/1 monospace;letter-spacing:.03em;}
+    #controls{top:20px;justify-content:flex-end;padding-right:20px;gap:12px;}
+    button{background:#111;border:1px solid #555;color:#fff;padding:10px 20px;font-size:1em;cursor:pointer;}
+    button:hover{background:#222;}
   </style>
 </head>
 <body>
@@ -24,24 +24,33 @@
 
 <script>
 /* ---------- CONFIG ---------- */
-const params     = new URLSearchParams(location.search);
-const sessionURL = params.get('session');             // ?session=foo.json
+const params      = new URLSearchParams(location.search);
+const sessionURL  = params.get('session');
+const fallbackMsg = '❗ Brak pliku sesji';
 
 /* ---------- STATE ---------- */
-let phases=[], iPhase=0, audioCtx, oscL,oscR,gainL,gainR;
-let vis={}, visStart=0, animId;
+let phases=[], pIdx=0, audioCtx, oscL,oscR,gainL,gainR, vis={}, visStart=0, animId;
 
 /* ---------- ENTRY ---------- */
-document.getElementById('gate').addEventListener('click', async()=>{
-  phases = (await (await fetch(sessionURL)).json()).phases;
+document.getElementById('gate').addEventListener('click', start);
+
+async function start(){
+  if(!sessionURL){ document.getElementById('gate').textContent=fallbackMsg; return; }
+  try{
+    phases = (await (await fetch(sessionURL)).json()).phases;
+  }catch(e){
+    document.getElementById('gate').textContent=fallbackMsg;
+    console.error(e);
+    return;
+  }
   document.getElementById('gate').remove();
   document.getElementById('controls').style.display='flex';
-  bootAudio();
+  initAudio();
   playPhase(0);
-});
+}
 
 /* ---------- AUDIO ---------- */
-function bootAudio(){
+function initAudio(){
   audioCtx = new (AudioContext||webkitAudioContext)();
   oscL  = audioCtx.createOscillator();
   oscR  = audioCtx.createOscillator();
@@ -55,36 +64,41 @@ function bootAudio(){
 }
 
 function applyAudio(a,dur){
-  const now=audioCtx.currentTime;
-  // carrier freq
-  if(a.carrier_left_start||a.carrier_left_end){
-    oscL.frequency.setValueAtTime(a.carrier_left_start??a.carrier_left,now);
-    oscL.frequency.linearRampToValueAtTime(a.carrier_left_end??oscL.frequency.value,now+dur);
-  } else oscL.frequency.setValueAtTime(a.carrier_left,now);
-  if(a.carrier_right_start||a.carrier_right_end){
-    oscR.frequency.setValueAtTime(a.carrier_right_start??a.carrier_right??a.carrier_left,now);
-    oscR.frequency.linearRampToValueAtTime(a.carrier_right_end??oscR.frequency.value,now+dur);
-  } else oscR.frequency.setValueAtTime(a.carrier_right??a.carrier_left,now);
-  // volume
-  const v0=a.volume_start??a.volume??.4, v1=a.volume_end??a.volume??v0;
-  gainL.gain.setValueAtTime(v0,now);
-  gainR.gain.setValueAtTime(v0,now);
-  gainL.gain.linearRampToValueAtTime(v1,now+dur);
-  gainR.gain.linearRampToValueAtTime(v1,now+dur);
-  // waveform
-  oscL.type = oscR.type = a.waveform??'sine';
+  const now = audioCtx.currentTime;
+
+  /*  ─── FREQ ───  */
+  const fL0=a.carrier_left_start ?? a.carrier_left,
+        fL1=a.carrier_left_end   ?? fL0,
+        fR0=a.carrier_right_start?? a.carrier_right ?? a.carrier_left,
+        fR1=a.carrier_right_end  ?? fR0;
+  oscL.frequency.setValueAtTime(fL0,now);
+  oscR.frequency.setValueAtTime(fR0,now);
+  oscL.frequency.linearRampToValueAtTime(fL1,now+dur);
+  oscR.frequency.linearRampToValueAtTime(fR1,now+dur);
+
+  /*  ─── VOLUME ─── */
+  const v0=a.volume_start ?? a.volume ?? .4,
+        v1=a.volume_end   ?? a.volume ?? v0;
+  [gainL.gain,gainR.gain].forEach(g=>{
+    g.cancelScheduledValues(now);
+    g.setValueAtTime(v0,now);
+    g.linearRampToValueAtTime(v1,now+dur);
+  });
+
+  /*  ─── WAVE ─── */
+  oscL.type = oscR.type = a.waveform ?? 'sine';
 }
 
 /* ---------- VISUAL ---------- */
 function applyVisual(v,dur){
-  vis={
-    f0:v.frequency_start??v.frequency??10,
-    f1:v.frequency_end  ??v.frequency??10,
-    b0:v.brightness_start??v.brightness??.4,
-    b1:v.brightness_end  ??v.brightness??.4,
-    c0:v.color_start??v.color??'#000',
-    c1:v.color_end  ??v.color??'#000',
-    mod:v.modulation??'sine',
+  vis = {
+    f0:v.frequency_start   ?? v.frequency   ?? 10,
+    f1:v.frequency_end     ?? v.frequency   ?? 10,
+    b0:v.brightness_start  ?? v.brightness  ?? .4,
+    b1:v.brightness_end    ?? v.brightness  ?? .4,
+    c0:v.color_start       ?? v.color       ?? '#000',
+    c1:v.color_end         ?? v.color       ?? '#000',
+    mod:v.modulation       ?? 'sine',
     dur
   };
   visStart = performance.now();
@@ -93,37 +107,40 @@ function applyVisual(v,dur){
 }
 
 function lerp(a,b,t){return a+(b-a)*t}
+
 function loopVis(ts){
-  const t = (ts-visStart)/1000, p = Math.min(t/vis.dur,1);
-  const freq = lerp(vis.f0,vis.f1,p);
-  const brBase = vis.mod==='pulse' ? (Math.sin(2*Math.PI*freq*t)>0?1:0)
-                                   : .5+.5*Math.sin(2*Math.PI*freq*t);
-  const br = brBase*lerp(vis.b0,vis.b1,p);
+  const t = (ts-visStart)/1000,
+        p = Math.min(t/vis.dur,1),
+        f = lerp(vis.f0,vis.f1,p),
+        brBase = vis.mod==='pulse' ? (Math.sin(2*Math.PI*f*t)>0?1:0)
+                                   : .5+.5*Math.sin(2*Math.PI*f*t),
+        br = brBase*lerp(vis.b0,vis.b1,p);
   const bg = document.getElementById('visual-bg');
-  // simple HSL fade for color
-  bg.style.background = p<1?vis.c0:vis.c1;
+  /* prosty fade koloru – HSL byłby lepszy, ale wystarczy */
+  bg.style.background = p<1 ? vis.c0 : vis.c1;
   bg.style.opacity    = br.toFixed(2);
   animId = requestAnimationFrame(loopVis);
 }
 
 /* ---------- PHASE ENGINE ---------- */
 function playPhase(n){
-  iPhase = n;
-  const p = phases[n];
-  const dur = (p.end - p.start);
-  applyAudio (p.audio,  dur);
-  applyVisual(p.visual,dur);
-  if(n<phases.length-1)
-    setTimeout(()=>playPhase(n+1), dur*1000);
+  pIdx = n;
+  const ph = phases[n],
+        dur = (ph.end - ph.start);           // zakładam sekundy w JSON
+  applyAudio (ph.audio , dur);
+  applyVisual(ph.visual, dur);
+
+  if(n < phases.length-1)
+      setTimeout(()=>playPhase(n+1), dur*1000);
   else
-    setTimeout(endSession, dur*1000);
+      setTimeout(endSession, dur*1000);
 }
 
 /* ---------- FIN ---------- */
 function endSession(){
-  try{oscL.stop();oscR.stop();audioCtx.close();}catch{}
+  try{ oscL.stop(); oscR.stop(); audioCtx.close(); }catch(e){}
   cancelAnimationFrame(animId);
-  window.close();
+  window.close();      // w przeglądarce desktopowej zamknie popup; ignorowane w tabie
 }
 </script>
 </body>
