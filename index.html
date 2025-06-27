@@ -1,41 +1,45 @@
 <!DOCTYPE html>
 <html lang="pl">
 <head>
-  <meta charset="UTF-8">
-  <meta http-equiv="Content-Security-Policy"
-        content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'">
-  <title>HYPERCORTEX – wybierz sesję</title>
-  <style>
-    :root{color-scheme:dark}body{margin:0;padding:40px 5%;background:#000;color:#fff;font:400 16px/1.5 system-ui,sans-serif}
-    h1{margin:0 0 32px;font-size:2.2rem} h2{margin:36px 0 12px;font-size:1.3rem}
-    ul{list-style:none;padding:0;margin:0;display:flex;flex-wrap:wrap;gap:12px}
-    li a{display:inline-block;padding:12px 20px;border:1px solid #444;border-radius:6px;background:#111;color:#fff;text-decoration:none;font-size:.95rem}
-    li a:hover{background:#222}
-  </style>
+<meta charset="UTF-8">
+<meta http-equiv="Content-Security-Policy"
+      content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'">
+<title>HYPERCORTEX – sesje</title>
+<style>
+:root{color-scheme:dark}
+body{margin:0;padding:40px 5%;background:#000;color:#fff;font-family:system-ui,sans-serif}
+h1{margin:0 0 32px;font-size:2.2rem}
+h2{margin:36px 0 12px;font-size:1.3rem}
+ul{list-style:none;padding:0;margin:0;display:flex;flex-wrap:wrap;gap:12px}
+li a{display:inline-block;padding:12px 20px;border:1px solid #444;border-radius:6px;
+     background:#111;color:#fff;text-decoration:none;font-size:.95rem}
+li a:hover{background:#222}
+</style>
 </head>
 <body>
-  <h1>🧠 HYPERCORTEX</h1>
-  <div id="root">Ładowanie…</div>
+<h1>🧠 HYPERCORTEX</h1>
+<div id="root">Ładowanie…</div>
 
 <script>
-fetch('index.json')                         // plik leży w tym samym folderze
-  .then(r => r.json())
-  .then(render)
-  .catch(() => document.getElementById('root').textContent = 'Nie mogę wczytać index.json');
-
-function render(data){
-  const root = document.getElementById('root'); root.innerHTML='';
-  data.categories.forEach(cat=>{
-    root.insertAdjacentHTML('beforeend',`<h2>${cat.icon||''} ${cat.name}</h2>`);
-    const ul=document.createElement('ul');
-    cat.sessions.forEach(file=>{
-      const label=file.replace(/\.json$/,'').replace(/[ΛΣΩ]/g,'').replace(/[-_.]/g,' ').trim();
-      ul.insertAdjacentHTML('beforeend',
-        `<li><a href="session.html?session=${encodeURIComponent(file)}">${label}</a></li>`);
-    });
-    root.appendChild(ul);
-  });
-}
+fetch('index.json')
+  .then(r=>r.json())
+  .then(data=>{
+      const root=document.getElementById('root'); root.innerHTML='';
+      data.categories.forEach(cat=>{
+          root.insertAdjacentHTML('beforeend',`<h2>${cat.icon||''} ${cat.name}</h2>`);
+          const ul=document.createElement('ul');
+          cat.sessions.forEach(file=>{
+              const label=file.replace(/\.json$/,'')
+                              .replace(/[ΛΣΩ]/g,'')
+                              .replace(/[-_.]/g,' ')
+                              .trim();
+              ul.insertAdjacentHTML('beforeend',
+                `<li><a href="session.html?session=${encodeURIComponent(file)}">${label}</a></li>`);
+          });
+          root.appendChild(ul);
+      });
+  })
+  .catch(()=>document.getElementById('root').textContent='❗ index.json nieczytelny');
 </script>
 </body>
 </html>
