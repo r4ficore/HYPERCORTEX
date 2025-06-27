@@ -3,16 +3,16 @@
 <head>
   <meta charset="UTF-8">
   <meta http-equiv="Content-Security-Policy"
-        content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline';">
+        content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'">
   <title>Sesja – HYPERCORTEX</title>
   <style>
-    html,body{margin:0;padding:0;height:100%;overflow:hidden;background:#000;color:#fff;}
-    #visual-bg{position:fixed;inset:0;background:#000;pointer-events:none;transition:opacity .2s;}
-    #gate,#controls{position:fixed;z-index:9;display:flex;align-items:center;justify-content:center;width:100%;}
-    #gate{inset:0;cursor:pointer;background:#000;font:700 24px/1 monospace;letter-spacing:.03em;}
-    #controls{top:20px;justify-content:flex-end;padding-right:20px;gap:12px;}
-    button{background:#111;border:1px solid #555;color:#fff;padding:10px 20px;font-size:1em;cursor:pointer;}
-    button:hover{background:#222;}
+    html,body{margin:0;height:100%;background:#000;overflow:hidden;color:#fff}
+    #visual-bg{position:fixed;inset:0;background:#000;pointer-events:none;transition:opacity .2s}
+    #gate,#controls{position:fixed;z-index:9;width:100%;display:flex;align-items:center;justify-content:center}
+    #gate{inset:0;cursor:pointer;font:700 24px monospace;background:#000}
+    #controls{top:20px;justify-content:flex-end;padding-right:20px}
+    button{background:#111;border:1px solid #555;color:#fff;padding:10px 20px;font-size:1em;cursor:pointer}
+    button:hover{background:#222}
   </style>
 </head>
 <body>
@@ -23,124 +23,66 @@
 </div>
 
 <script>
-/* ---------- CONFIG ---------- */
-const params      = new URLSearchParams(location.search);
-const sessionURL  = params.get('session');
-const fallbackMsg = '❗ Brak pliku sesji';
+/* ---------- BASIC SETUP ---------- */
+const src = new URLSearchParams(location.search).get('session');
+if(!src) document.getElementById('gate').textContent='❗ Brak parametru ?session=';
 
-/* ---------- STATE ---------- */
-let phases=[], pIdx=0, audioCtx, oscL,oscR,gainL,gainR, vis={}, visStart=0, animId;
+let phases=[], p=0, ctx,oscL,oscR,gL,gR,anim,vis={};
 
-/* ---------- ENTRY ---------- */
-document.getElementById('gate').addEventListener('click', start);
-
-async function start(){
-  if(!sessionURL){ document.getElementById('gate').textContent=fallbackMsg; return; }
-  try{
-    phases = (await (await fetch(sessionURL)).json()).phases;
-  }catch(e){
-    document.getElementById('gate').textContent=fallbackMsg;
-    console.error(e);
-    return;
-  }
-  document.getElementById('gate').remove();
-  document.getElementById('controls').style.display='flex';
-  initAudio();
-  playPhase(0);
-}
+document.getElementById('gate').onclick = async () =>{
+  try{ phases = (await fetch(src)).ok ? await (await fetch(src)).json().then(d=>d.phases) : []; }
+  catch(e){ console.error(e); return alert('Nie mogę wczytać pliku '+src); }
+  initAudio(); this.remove(); document.getElementById('controls').style.display='flex'; play(0);
+};
 
 /* ---------- AUDIO ---------- */
 function initAudio(){
-  audioCtx = new (AudioContext||webkitAudioContext)();
-  oscL  = audioCtx.createOscillator();
-  oscR  = audioCtx.createOscillator();
-  gainL = audioCtx.createGain();
-  gainR = audioCtx.createGain();
-  const merger = audioCtx.createChannelMerger(2);
-  oscL.connect(gainL).connect(merger,0,0);
-  oscR.connect(gainR).connect(merger,0,1);
-  merger.connect(audioCtx.destination);
+  ctx=new (AudioContext||webkitAudioContext)();
+  oscL=ctx.createOscillator(); oscR=ctx.createOscillator();
+  gL=ctx.createGain(); gR=ctx.createGain();
+  const m=ctx.createChannelMerger(2);
+  oscL.connect(gL).connect(m,0,0); oscR.connect(gR).connect(m,0,1); m.connect(ctx.destination);
   oscL.start(); oscR.start();
 }
-
-function applyAudio(a,dur){
-  const now = audioCtx.currentTime;
-
-  /*  ─── FREQ ───  */
-  const fL0=a.carrier_left_start ?? a.carrier_left,
-        fL1=a.carrier_left_end   ?? fL0,
-        fR0=a.carrier_right_start?? a.carrier_right ?? a.carrier_left,
-        fR1=a.carrier_right_end  ?? fR0;
-  oscL.frequency.setValueAtTime(fL0,now);
-  oscR.frequency.setValueAtTime(fR0,now);
-  oscL.frequency.linearRampToValueAtTime(fL1,now+dur);
-  oscR.frequency.linearRampToValueAtTime(fR1,now+dur);
-
-  /*  ─── VOLUME ─── */
-  const v0=a.volume_start ?? a.volume ?? .4,
-        v1=a.volume_end   ?? a.volume ?? v0;
-  [gainL.gain,gainR.gain].forEach(g=>{
-    g.cancelScheduledValues(now);
-    g.setValueAtTime(v0,now);
-    g.linearRampToValueAtTime(v1,now+dur);
-  });
-
-  /*  ─── WAVE ─── */
-  oscL.type = oscR.type = a.waveform ?? 'sine';
+function setAudio(a,dur){
+  const t=ctx.currentTime;
+  const [l0,l1]=[a.carrier_left_start??a.carrier_left,  a.carrier_left_end  ??a.carrier_left];
+  const [r0,r1]=[a.carrier_right_start??a.carrier_right??l0, a.carrier_right_end??a.carrier_right??l0];
+  oscL.frequency.setValueAtTime(l0,t); oscR.frequency.setValueAtTime(r0,t);
+  oscL.frequency.linearRampToValueAtTime(l1,t+dur); oscR.frequency.linearRampToValueAtTime(r1,t+dur);
+  const v0=a.volume_start??a.volume??.4, v1=a.volume_end??a.volume??v0;
+  [gL.gain,gR.gain].forEach(g=>{g.setValueAtTime(v0,t);g.linearRampToValueAtTime(v1,t+dur);});
+  oscL.type=oscR.type=a.waveform??'sine';
 }
 
 /* ---------- VISUAL ---------- */
-function applyVisual(v,dur){
-  vis = {
-    f0:v.frequency_start   ?? v.frequency   ?? 10,
-    f1:v.frequency_end     ?? v.frequency   ?? 10,
-    b0:v.brightness_start  ?? v.brightness  ?? .4,
-    b1:v.brightness_end    ?? v.brightness  ?? .4,
-    c0:v.color_start       ?? v.color       ?? '#000',
-    c1:v.color_end         ?? v.color       ?? '#000',
-    mod:v.modulation       ?? 'sine',
-    dur
-  };
-  visStart = performance.now();
-  cancelAnimationFrame(animId);
-  animId = requestAnimationFrame(loopVis);
+function setVisual(v,dur){
+  vis={f0:v.frequency_start??v.frequency??10,f1:v.frequency_end??v.frequency??10,
+       b0:v.brightness_start??v.brightness??.4,b1:v.brightness_end??v.brightness??.4,
+       c0:v.color_start??v.color??'#000',c1:v.color_end??v.color??'#000',
+       mod:v.modulation??'sine',dur,start:performance.now()};
+  cancelAnimationFrame(anim); anim=requestAnimationFrame(loop);
 }
-
-function lerp(a,b,t){return a+(b-a)*t}
-
-function loopVis(ts){
-  const t = (ts-visStart)/1000,
-        p = Math.min(t/vis.dur,1),
-        f = lerp(vis.f0,vis.f1,p),
-        brBase = vis.mod==='pulse' ? (Math.sin(2*Math.PI*f*t)>0?1:0)
-                                   : .5+.5*Math.sin(2*Math.PI*f*t),
-        br = brBase*lerp(vis.b0,vis.b1,p);
-  const bg = document.getElementById('visual-bg');
-  /* prosty fade koloru – HSL byłby lepszy, ale wystarczy */
-  bg.style.background = p<1 ? vis.c0 : vis.c1;
-  bg.style.opacity    = br.toFixed(2);
-  animId = requestAnimationFrame(loopVis);
+function loop(ts){
+  const t=(ts-vis.start)/1000, prog=Math.min(t/vis.dur,1);
+  const f=vis.f0+(vis.f1-vis.f0)*prog;
+  const cyc=vis.mod==='pulse'?(Math.sin(2*Math.PI*f*t)>0?1:0):.5+.5*Math.sin(2*Math.PI*f*t);
+  const br=cyc*(vis.b0+(vis.b1-vis.b0)*prog);
+  const bg=document.getElementById('visual-bg');
+  bg.style.background=prog<1?vis.c0:vis.c1; bg.style.opacity=br.toFixed(2);
+  anim=requestAnimationFrame(loop);
 }
 
 /* ---------- PHASE ENGINE ---------- */
-function playPhase(n){
-  pIdx = n;
-  const ph = phases[n],
-        dur = (ph.end - ph.start);           // zakładam sekundy w JSON
-  applyAudio (ph.audio , dur);
-  applyVisual(ph.visual, dur);
-
-  if(n < phases.length-1)
-      setTimeout(()=>playPhase(n+1), dur*1000);
-  else
-      setTimeout(endSession, dur*1000);
+function play(i){
+  p=i; const ph=phases[i], dur=ph.end-ph.start;
+  setAudio(ph.audio,dur); setVisual(ph.visual,dur);
+  if(i<phases.length-1) setTimeout(()=>play(i+1),dur*1000); else setTimeout(endSession,dur*1000);
 }
 
-/* ---------- FIN ---------- */
+/* ---------- STOP ---------- */
 function endSession(){
-  try{ oscL.stop(); oscR.stop(); audioCtx.close(); }catch(e){}
-  cancelAnimationFrame(animId);
-  window.close();      // w przeglądarce desktopowej zamknie popup; ignorowane w tabie
+  try{oscL.stop();oscR.stop();ctx.close();}catch{} cancelAnimationFrame(anim); window.close();
 }
 </script>
 </body>
