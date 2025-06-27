@@ -1,69 +1,48 @@
-
 <!DOCTYPE html>
 <html lang="pl">
 <head>
   <meta charset="UTF-8">
-  <title>HYPERCORTEX</title>
+  <meta http-equiv="Content-Security-Policy"
+        content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline';">
+  <title>HYPERCORTEX – wybierz sesję</title>
   <style>
-    body {
-      background: #000;
-      color: #fff;
-      font-family: sans-serif;
-      margin: 0;
-      padding: 20px;
-    }
-    h1, h2 {
-      text-align: center;
-    }
-    .category {
-      margin: 20px 0;
-    }
-    .category h2 {
-      color: #ffcc00;
-    }
-    .session-button {
-      display: inline-block;
-      margin: 5px;
-      padding: 10px 20px;
-      background: #222;
-      border: 1px solid #444;
-      color: #fff;
-      cursor: pointer;
-    }
-    .session-button:hover {
-      background: #333;
-    }
+    :root { color-scheme: dark; }
+    body  { margin:0; padding:40px 5%; font-family:system-ui, sans-serif; background:#000; color:#fff; }
+    h1    { margin:0 0 30px; font-size:2.2rem; }
+    h2    { margin:40px 0 10px; font-size:1.3rem; }
+    ul    { list-style:none; padding:0; display:flex; flex-wrap:wrap; gap:12px; }
+    li a  { display:inline-block; padding:12px 18px; background:#111; border:1px solid #333;
+            border-radius:6px; text-decoration:none; color:#fff; font-size:0.95rem; }
+    li a:hover { background:#222; }
   </style>
 </head>
 <body>
-
-<h1>HYPERCORTEX</h1>
-<div id="categories"></div>
+  <h1>🧠 HYPERCORTEX</h1>
+  <div id="root">Ładowanie…</div>
 
 <script>
-fetch('index.json')
-  .then(res => res.json())
-  .then(data => {
-    const container = document.getElementById("categories");
-    data.categories.forEach(cat => {
-      const div = document.createElement("div");
-      div.className = "category";
-      const title = document.createElement("h2");
-      title.textContent = cat.icon + " " + cat.name;
-      div.appendChild(title);
+const CAT_FILE  = 'categories.json';  // możesz zmienić nazwę / ścieżkę
+const SESS_PATH = 'sessions/';        // prefiks doklejany do linku ?session=
 
-      cat.sessions.forEach(filename => {
-        const btn = document.createElement("div");
-        btn.className = "session-button";
-        btn.textContent = filename.replace(".json", "");
-        btn.onclick = () => window.open('session.html?session=' + filename, '_blank');
-        div.appendChild(btn);
-      });
+fetch(CAT_FILE)
+  .then(r=>r.json())
+  .then(render)
+  .catch(err=>{ document.getElementById('root').textContent='Nie mogę odczytać categories.json'; console.error(err); });
 
-      container.appendChild(div);
+function render(data){
+  const root = document.getElementById('root');
+  root.innerHTML = '';
+  data.categories.forEach(cat=>{
+    root.insertAdjacentHTML('beforeend', `<h2>${cat.icon} ${cat.name}</h2>`);
+    const ul = document.createElement('ul');
+    cat.sessions.forEach(file=>{
+      const nice = file.replace(/\.json$/,'').replace(/[-_.]/g,' ').replace(/[ΛΣΩ]/g,'').trim();
+      ul.insertAdjacentHTML('beforeend',
+        `<li><a href="session.html?session=${encodeURIComponent(SESS_PATH+file)}">${nice}</a></li>`);
     });
+    root.appendChild(ul);
   });
+}
 </script>
-
 </body>
 </html>
